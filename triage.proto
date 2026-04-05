@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package triage;
+
+// Service 1: AdmissionService (Unary)
+service AdmissionService {
+  rpc RegisterPatient (PatientData) returns (PatientRecord) {}
+}
+
+// Service 2: VitalsService (Bi-directional Streaming)
+service VitalsService {
+  rpc MonitorVitals (stream VitalsStream) returns (stream AlertMessage) {}
+}
+
+// Service 3: DashboardService (Server-side Streaming)
+service DashboardService {
+  rpc SubscribeDashboard (Empty) returns (stream QueueUpdate) {}
+}
+
+message PatientData {
+  string name = 1;
+  int32 age = 2;
+  string complaint = 3;
+}
+
+message PatientRecord {
+  string patient_id = 1;
+  string status = 2;
+  string name = 3;
+  int32 age = 4;
+  string complaint = 5;
+}
+
+message VitalsStream {
+  string patient_id = 1;
+  int32 bpm = 2;
+  int32 blood_pressure_systolic = 3;
+}
+
+message AlertMessage {
+  string alert_level = 1;
+  string instruction = 2;
+}
+
+message Empty {}
+
+message QueueUpdate {
+  repeated PatientRecord active_patients = 1; 
+}
